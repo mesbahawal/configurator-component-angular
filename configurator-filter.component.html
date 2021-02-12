@@ -1,0 +1,217 @@
+<section class="configurator section__padding">
+  <div class="wrap-ipad-landscape-full helper__wrap flex-box flex-box--wrap">
+    <div class="col-12">
+      <div class="headline headline--default headline__text-orientation--left">
+        <h2>{{ 'CONFIGURATOR_FILTER.CHOOSE_YOUR_PERFORATED_PLATE' | translate }}</h2>
+      </div>
+    </div>
+    <div class="col-12 col-ipad-portrait-8 col-desktop-small-9 flex-box flex-box--column flex-box--between">
+      <div class="filter__wrap">
+        <div class="row row--small-gutter flex-helper">
+          <ng-container *ngFor="let pat of Pattern | enumToArray">
+            <ng-container *ngIf="pat !== 'St'">
+              <a class="filter" [class.filter--active]="selectedPattern === pat" (click)="selectChanged('pat', pat)">
+                <div class="filter__icon">
+                  <i class="svg-icon">
+                    <img class="svg-file" [src]="'assets/svg/' + pat + '.svg'" height="80px" width="91.4219px"/>
+                  </i>
+                </div>
+                <ng-container *ngIf="pat !== 'In'">
+                  <div class="filter__description">
+                    <div class="filter__label">{{ 'PAT_DESC_SHORT.' + pat | translate }}</div>
+                    <div class="filter__additional">{{pat}}</div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="pat === 'In'">
+                  <div class="filter__description" [class.special]="selectedPattern !== pat">
+                    <div class="filter__label">{{ 'PAT_DESC_SHORT.' + pat | translate }}</div>
+                    <div class="filter__additional">
+                      <i class="svg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12.4" height="21.4" viewBox="0 0 12.4 21.4">
+                          <path d="M2.1,21.4,0,19.3l8.2-8.6L0,2.1,2.1,0,12.4,10.7Z" fill="white"/>
+                        </svg>
+                      </i>
+                    </div>
+                  </div>
+                </ng-container>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="pat === 'St'">
+              <a class="filter" [class.filter--active]="selectedPattern === pat" (click)="selectChanged('pat', pat)"
+                 href="{{stockUrl}}" target="_blank">
+                <div class="filter__icon">
+                  <i class="svg-icon">
+                    <img class="svg-file" [src]="'/assets/svg/' + pat + '.svg'" height="80px" width="91.4219px"/>
+                  </i>
+                </div>
+                <div class="filter__description" [class.special]="selectedPattern !== pat">
+                  <div class="filter__label">Lochblech vom Lager</div>
+                  <div class="filter__additional">
+                    <i class="svg-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                        <path d="M6.2,20.025a6.288,6.288,0,0,1-4.386-1.812,6.274,6.274,0,0,1,0-8.772L4.578,6.676l2,2L3.815,11.443a3.338,3.338,0,0,0,0,4.768,3.4,3.4,0,0,0,4.672,0l2.765-2.765,2,2-2.67,2.67A6,6,0,0,1,6.2,20.025ZM7.82,14.209l-2-2,6.389-6.389,2,2Zm7.533-.858-2-2,2.765-2.765A3.163,3.163,0,0,0,17.069,6.2a3.762,3.762,0,0,0-.954-2.384,3.4,3.4,0,0,0-4.672,0L8.678,6.58l-2.1-2L9.346,1.813a6.274,6.274,0,0,1,8.772,0h0A6,6,0,0,1,20.025,6.2a6.289,6.289,0,0,1-1.812,4.386Z"
+                              transform="translate(-0.025 -0.025)" fill="white"/></svg>
+                    </i>
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+          </ng-container>
+
+        </div>
+      </div>
+      <div class="custom-select--configurator__container" *ngIf="selectedPattern && selectedPattern !== 'St'">
+        <div class="row row--small-gutter flex-helper">
+          <div class="col-12 col-ipad-portrait-6 col-desktop-smallest-4">
+            <h3 class="custom-select--configurator__label">{{ 'MATERIAL' | translate }}</h3>
+            <div class="custom-select custom-select--menu custom-select--configurator custom-select--border"
+                 [class.custom-select--open]="customSelectToggles.material"
+                 (click)="toggleCustomSelect('material')">
+              <div class="flex-box flex-box--wrap">
+                <div class="custom-select__select custom-select__select--menu open-select">
+                  <div class="custom-select__select--content-box">
+                    <div class="content" [class.content--selected]="selectedMaterial && !customSelectToggles.material">
+                      {{(selectedMaterial) ? selectedMaterial : translate.instant('SELECT.NULL')}}
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-select__container custom-select__container--menu flex-box flex-box--wrap">
+                  <div class="custom-select__container--content-box custom-select__container--alt-hover"
+                       *ngFor="let item of cByPat | unique:'material'">
+                    <a (click)="selectedMaterial = item.material; selectChanged('material')"
+                       class="setTab button button__inline button__inline--select changeValue">
+                      {{item.material}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="selectedPattern !== 'In'; else individualHoleWidthInput">
+            <div class="col-12 col-ipad-portrait-6 col-desktop-smallest-4" *ngIf="selectedPattern && selectedMaterial">
+              <h3 class="custom-select--configurator__label">{{ 'HOLE_WIDTH' | translate }}</h3>
+              <div class="custom-select custom-select--menu custom-select--configurator custom-select--border"
+                   [class.custom-select--open]="customSelectToggles.holeWidth"
+                   (click)="toggleCustomSelect('holeWidth')">
+                <div class="flex-box flex-box--wrap ">
+                  <div class="custom-select__select custom-select__select--menu open-select">
+                    <div class="custom-select__select--content-box">
+                      <div class="content" [class.content--selected]="selectedHoleWidth && !customSelectToggles.holeWidth">
+                        {{(selectedHoleWidth) ? selectedHoleWidth : translate.instant('SELECT.NULL')}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="custom-select__container custom-select__container--menu flex-box flex-box--wrap">
+                    <div class="custom-select__container--numbers">
+                      <div class="custom-select__container--content-box"
+                           *ngFor="let item of cByPatMat | unique:'holeWidth'">
+                        <a (click)="selectedHoleWidth = item.holeWidth; selectChanged('holeWidth')"
+                           class="setTab button button__inline button__inline--select button__inline--alt-hover changeValue">
+                          {{item.holeWidth}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #individualHoleWidthInput>
+            <div class="col-12 col-ipad-portrait-6 col-desktop-smallest-4">
+              <h3 class="custom-select--configurator__label">{{ 'HOLE_WIDTH' | translate }}</h3>
+              <div class="custom-select custom-select--configurator custom-select--border" style="cursor: default;">
+                <div class="flex-box flex-box--wrap ">
+                  <div class="custom-select__select custom-select__select--menu open-select">
+                    <div class="custom-select__select--content-box">
+                      <div class="content">
+                        <input class="custom-input--configurator" type="tel"
+                               placeholder="Bitte Lochweite erfassen ..."
+                               [(ngModel)]="selectedHoleWidth"
+                               (change)="individualInputChanged('holeWidth')" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-container *ngIf="selectedPattern !== 'In'; else individualHolePitchInput">
+            <div class="col-12 col-ipad-portrait-6 col-desktop-smallest-4" *ngIf="selectedPattern && selectedMaterial && selectedHoleWidth">
+              <h3 class="custom-select--configurator__label">{{ 'HOLE_PITCH' | translate }}</h3>
+              <div class="custom-select custom-select--menu custom-select--configurator custom-select--border"
+                   [class.custom-select--open]="customSelectToggles.holePitch"
+                   (click)="toggleCustomSelect('holePitch')">
+                <div class="flex-box flex-box--wrap ">
+                  <div class="custom-select__select custom-select__select--menu open-select">
+                    <div class="custom-select__select--content-box">
+                      <div class="content" [class.content--selected]="selectedHolePitch && !customSelectToggles.holePitch">
+                        {{(selectedHolePitch) ? selectedHolePitch : translate.instant('SELECT.NULL')}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="custom-select__container custom-select__container--menu flex-box flex-box--wrap">
+                    <div class="custom-select__container--numbers">
+                      <div class="custom-select__container--content-box"
+                           *ngFor="let item of cByPatMatHW | unique:'holePitch'">
+                        <a (click)="selectedHolePitch = item.holePitch; selectChanged('holePitch')"
+                           class="setTab button button__inline button__inline--select changeValue">
+                          {{item.holePitch}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #individualHolePitchInput>
+            <div class="col-12 col-ipad-portrait-6 col-desktop-smallest-4">
+              <h3 class="custom-select--configurator__label">{{ 'HOLE_PITCH' | translate }}</h3>
+              <div class="custom-select custom-select--configurator custom-select--border" style="cursor: default;">
+                <div class="flex-box flex-box--wrap ">
+                  <div class="custom-select__select custom-select__select--menu open-select">
+                    <div class="custom-select__select--content-box">
+                      <div class="content">
+                        <input class="custom-input--configurator" type="tel"
+                               placeholder="Bitte Lochteilung erfassen ..."
+                               [(ngModel)]="selectedHolePitch"
+                               (change)="individualInputChanged('holePitch')" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-ipad-portrait-4 col-desktop-small-3 flex-box flex-box--end">
+      <figure class="hide show-ipad-portrait configurator__figure" *ngIf="selectedPattern && selectedPattern !== 'St'">
+        <img src="assets/img/configurator/configurator_figure/{{getConfiguratorFigure()}}" width="320" alt="Lochblech Rendering"
+             class="image--responsive"/>
+        <figcaption style="height: 38px;">
+          <a *ngIf="selectedPattern !== 'In'" (click)="overlayActive = true;"
+             class="button button__inline button__inline--default button__text-orientation--left button--blue-arrow button--small toggle-overlay">
+            Mehr Informationen zum Lochbild
+          </a>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="overlay overlay__image" [class.overlay--active]="overlayActive" *ngIf="selectedPattern && selectedPattern !== 'In' && selectedPattern !== 'St'">
+    <div class="wrap-ipad-landscape-full helper__wrap">
+      <div class="col-12">
+        <div class="overlay__content">
+          <a (click)="overlayActive = false;" class="button button__close toggle-overlay"></a>
+          <img [src]="'assets/img/configurator/configurator_formula/' + selectedPattern + '.jpg'"
+               alt="Lochblech Rendering"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
